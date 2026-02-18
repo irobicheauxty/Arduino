@@ -35,10 +35,10 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(10, LOW);  // turn the LED on (HIGH is the voltage level)
+  digitalWrite(10, LOW);  // turn the LED on (LOW is the voltage level)
    digitalWrite(9, HIGH);  // turn the LED on (HIGH is the voltage level)
   delay(300);                      // wait for a second
-    digitalWrite(9, LOW);  // turn the LED on (HIGH is the voltage level)
+    digitalWrite(9, LOW);  // turn the LED on (LOW is the voltage level)
    digitalWrite(10, HIGH);  // turn the LED on (HIGH is the voltage level)
   delay(300);                      // wait for a second
 }
