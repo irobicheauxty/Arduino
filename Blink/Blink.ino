@@ -27,29 +27,39 @@
 
 // the setup function runs once when you press reset or power the board
 // ------------------------------------
-// ------------------------------------
 // Generic Police Siren
-// Proper Flashing Lights (Timer Based)
+// Flashing Lights + PWM Fade LED
 // ------------------------------------
 
 int redLED = 10;
 int blueLED = 9;
 int speaker = 11;
+int fadeLED = 6;   // NEW PWM Fade LED
 
-unsigned long previousFlash = 0;   // Stores last flash time
-int flashInterval = 100;           // Flash speed (milliseconds)
-bool lightState = false;           // Which light is on
+// -------- Flashing Lights --------
+unsigned long previousFlash = 0;
+int flashInterval = 100;
+bool lightState = false;
+
+// -------- Fade LED --------
+unsigned long previousFade = 0;
+int fadeInterval = 20;   // Smaller = faster fade
+int brightness = 0;
+int fadeAmount = 5;
 
 void setup() {
   pinMode(redLED, OUTPUT);
   pinMode(blueLED, OUTPUT);
   pinMode(speaker, OUTPUT);
+  pinMode(fadeLED, OUTPUT);
 }
 
+// ----------------------------
+// Handle Alternating Lights
+// ----------------------------
 void handleLights() {
   unsigned long currentTime = millis();
 
-  // If enough time passed, switch lights
   if (currentTime - previousFlash >= flashInterval) {
     previousFlash = currentTime;
 
@@ -57,6 +67,25 @@ void handleLights() {
 
     digitalWrite(redLED, lightState);
     digitalWrite(blueLED, !lightState);
+  }
+}
+
+// ----------------------------
+// Handle PWM Fade LED
+// ----------------------------
+void handleFade() {
+  unsigned long currentTime = millis();
+
+  if (currentTime - previousFade >= fadeInterval) {
+    previousFade = currentTime;
+
+    analogWrite(fadeLED, brightness);
+
+    brightness += fadeAmount;
+
+    if (brightness <= 0 || brightness >= 255) {
+      fadeAmount = -fadeAmount;  // Reverse fade direction
+    }
   }
 }
 
@@ -68,12 +97,14 @@ void loop() {
   for (int freq = 600; freq <= 1400; freq += 3) {
     tone(speaker, freq);
     handleLights();
+    handleFade();
     delay(5);
   }
 
   for (int freq = 1400; freq >= 600; freq -= 3) {
     tone(speaker, freq);
     handleLights();
+    handleFade();
     delay(5);
   }
 
@@ -85,14 +116,17 @@ void loop() {
     for (int freq = 900; freq <= 1500; freq += 15) {
       tone(speaker, freq);
       handleLights();
+      handleFade();
       delay(3);
     }
 
     for (int freq = 1500; freq >= 900; freq -= 15) {
       tone(speaker, freq);
       handleLights();
+      handleFade();
       delay(3);
     }
   }
 
 }
+
