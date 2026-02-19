@@ -26,19 +26,73 @@
 */
 
 // the setup function runs once when you press reset or power the board
+// ------------------------------------
+// ------------------------------------
+// Generic Police Siren
+// Proper Flashing Lights (Timer Based)
+// ------------------------------------
+
+int redLED = 10;
+int blueLED = 9;
+int speaker = 11;
+
+unsigned long previousFlash = 0;   // Stores last flash time
+int flashInterval = 100;           // Flash speed (milliseconds)
+bool lightState = false;           // Which light is on
+
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(10, OUTPUT);
-  pinMode(9, OUTPUT);
-  pinMode(10, OUTPUT);
-  pinMode(9, OUTPUT);
+  pinMode(redLED, OUTPUT);
+  pinMode(blueLED, OUTPUT);
+  pinMode(speaker, OUTPUT);
+}
+
+void handleLights() {
+  unsigned long currentTime = millis();
+
+  // If enough time passed, switch lights
+  if (currentTime - previousFlash >= flashInterval) {
+    previousFlash = currentTime;
+
+    lightState = !lightState;
+
+    digitalWrite(redLED, lightState);
+    digitalWrite(blueLED, !lightState);
+  }
 }
 
 void loop() {
-  digitalWrite(10, LOW);  // turn the LED on (LOW is the voltage level)
-   digitalWrite(9, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(300);                      // wait for a second
-    digitalWrite(9, LOW);  // turn the LED on (LOW is the voltage level)
-   digitalWrite(10, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(300);                      // wait for a second
+
+  // =========================
+  // WAIL MODE
+  // =========================
+  for (int freq = 600; freq <= 1400; freq += 3) {
+    tone(speaker, freq);
+    handleLights();
+    delay(5);
+  }
+
+  for (int freq = 1400; freq >= 600; freq -= 3) {
+    tone(speaker, freq);
+    handleLights();
+    delay(5);
+  }
+
+  // =========================
+  // YELP MODE
+  // =========================
+  for (int i = 0; i < 3; i++) {
+
+    for (int freq = 900; freq <= 1500; freq += 15) {
+      tone(speaker, freq);
+      handleLights();
+      delay(3);
+    }
+
+    for (int freq = 1500; freq >= 900; freq -= 15) {
+      tone(speaker, freq);
+      handleLights();
+      delay(3);
+    }
+  }
+
 }
