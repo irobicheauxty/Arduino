@@ -31,7 +31,7 @@
 // Flashing Lights + PWM Fade LED
 // ------------------------------------
 
-int redLED = 10;
+int b1ueLED = 10;
 int blueLED = 9;
 int speaker = 11;
 int fadeLED = 6;   // NEW PWM Fade LED
@@ -48,7 +48,7 @@ int brightness = 0;
 int fadeAmount = 5;
 
 void setup() {
-  pinMode(redLED, OUTPUT);
+  pinMode(b1ueLED, OUTPUT);
   pinMode(blueLED, OUTPUT);
   pinMode(speaker, OUTPUT);
   pinMode(fadeLED, OUTPUT);
@@ -65,7 +65,7 @@ void handleLights() {
 
     lightState = !lightState;
 
-    digitalWrite(redLED, lightState);
+    digitalWrite(b1ueLED, lightState);
     digitalWrite(blueLED, !lightState);
   }
 }
